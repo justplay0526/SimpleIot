@@ -1,0 +1,71 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <TextView
+        android:id="@+id/timestampText"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="TimeStamp Text"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <TextView
+        android:id="@+id/GreenText"
+        android:textSize="14sp"
+        android:textColor="#00A600"
+        android:layout_marginTop="4dp"
+        android:layout_marginStart="32dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Green Text"
+        app:layout_constraintTop_toBottomOf="@id/timestampText"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <TextView
+        android:id="@+id/RedText"
+        android:textSize="14sp"
+        android:textColor="#EA0000"
+        android:layout_marginTop="4dp"
+        android:layout_marginStart="32dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Red Text"
+        app:layout_constraintTop_toBottomOf="@id/GreenText"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <TextView
+        android:id="@+id/BlackText"
+        android:textSize="14sp"
+        android:textColor="@color/black"
+        android:layout_marginTop="4dp"
+        android:layout_marginStart="32dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Black Text"
+        app:layout_constraintTop_toBottomOf="@id/RedText"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <TextView
+        android:id="@+id/evaluationText"
+        android:textSize="14sp"
+        android:textStyle="italic"
+        android:layout_marginTop="6dp"
+        android:layout_marginStart="32dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        tools:text="評價文字"
+        app:layout_constraintTop_toBottomOf="@id/BlackText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+
+    <com.google.android.material.divider.MaterialDivider
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:dividerThickness="2dp"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+</androidx.constraintlayout.widget.ConstraintLayout>
