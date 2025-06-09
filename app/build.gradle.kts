@@ -45,6 +45,8 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.swiperefreshlayout)
+    implementation(libs.mpandroidchart)
     implementation(platform("com.google.firebase:firebase-bom:33.14.0"))
     implementation ("com.google.firebase:firebase-database-ktx:20.2.1")
     testImplementation(libs.junit)

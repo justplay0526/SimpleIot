@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -14,8 +15,20 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val swipeRefreshLayout = findViewById<SwipeRefreshLayout>(R.id.swipeRefreshLayout)
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
+
+        refreshData(recyclerView, swipeRefreshLayout = null)
+        swipeRefreshLayout.setOnRefreshListener {
+            refreshData(recyclerView, swipeRefreshLayout)
+        }
+    }
+
+    private fun refreshData(
+        recyclerView: RecyclerView,
+        swipeRefreshLayout: SwipeRefreshLayout? = null
+    ) {
         val summaryRef = FirebaseDatabase.getInstance().getReference("summary")
         val summaryList = mutableListOf<SummaryItem>()
 
@@ -41,11 +54,14 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 recyclerView.adapter = SummaryAdapter(summaryList)
+                swipeRefreshLayout?.isRefreshing = false // 停止刷新動畫
             }
 
             override fun onCancelled(error: DatabaseError) {
-                // handle error
+                swipeRefreshLayout?.isRefreshing = false
+                // handle error if needed
             }
         })
     }
+
 }

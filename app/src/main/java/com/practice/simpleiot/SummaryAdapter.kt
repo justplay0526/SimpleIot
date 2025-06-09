@@ -4,7 +4,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.graphics.toColorInt
 import androidx.recyclerview.widget.RecyclerView
+import com.github.mikephil.charting.charts.PieChart
+import com.github.mikephil.charting.data.PieData
+import com.github.mikephil.charting.data.PieDataSet
+import com.github.mikephil.charting.data.PieEntry
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -28,7 +33,7 @@ class SummaryAdapter(private val data: List<SummaryItem>) :
         val redText: TextView = view.findViewById(R.id.RedText)
         val blackText: TextView = view.findViewById(R.id.BlackText)
         val evaluationText: TextView = view.findViewById(R.id.evaluationText)
-
+        val pieChart: PieChart = view.findViewById(R.id.pieChart)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SummaryViewHolder {
@@ -76,6 +81,44 @@ class SummaryAdapter(private val data: List<SummaryItem>) :
         holder.blackText.text = blackList.joinToString("\n")
         holder.evaluationText.text = evaluation
 
+        // 將姿勢統計資料轉為 PieEntry 清單
+        val entries = item.postures.mapNotNull { (key, value) ->
+            if (key == "Detection Error" || value.duration_sec == 0.0) return@mapNotNull null
+            PieEntry(value.duration_sec.toFloat(), labelMap[key] ?: key).also {
+                it.data = key // 儲存原始 key 用於對應顏色
+            }
+        }
+
+        if (entries.isEmpty()) {
+            holder.pieChart.clear()
+            holder.pieChart.setNoDataText("無有效姿勢資料")
+            return
+        }
+
+        val colorMap = mapOf(
+            "Upright Head" to "#4CAF50".toColorInt(), // 綠
+            "Head Down" to "#F44336".toColorInt(),    // 紅
+            "Leaning Sideways" to "#FF9800".toColorInt(), // 橘
+            "Relaxed Posture" to "#9E9E9E".toColorInt()  // 灰
+        )
+
+        val colors = entries.mapNotNull { entry ->
+            val key = entry.data as? String
+            colorMap[key]
+        }
+        // 建立資料集合
+        val dataSet = PieDataSet(entries, "姿勢時間分布").apply {
+            setColors(colors)
+            valueTextSize = 12f
+            valueTextColor = android.graphics.Color.BLACK
+        }
+
+        // 設定圖表資料
+        holder.pieChart.data = PieData(dataSet)
+        holder.pieChart.description.isEnabled = false
+        holder.pieChart.setDrawEntryLabels(false)
+        holder.pieChart.legend.isEnabled = false
+        holder.pieChart.invalidate() // 重繪圖表
     }
 
     override fun getItemCount(): Int = data.size
