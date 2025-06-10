@@ -26,6 +26,8 @@ class SummaryAdapter(private val data: List<SummaryItem>) :
     private val greenSet = setOf("Upright Head")
     private val redSet = setOf("Head Down", "Leaning Sideways")
     private val blackSet = setOf("Relaxed Posture", "Detection Error")
+    private val evaluationText = listOf("資料不足，無法評估", "姿勢良好，請繼續保持"
+        , "姿勢需注意，請改善坐姿", "姿勢普通，仍有進步空間")
 
     class SummaryViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val timeText: TextView = view.findViewById(R.id.timestampText)
@@ -70,16 +72,24 @@ class SummaryAdapter(private val data: List<SummaryItem>) :
                 (item.postures["Leaning Sideways"]?.duration_sec ?: 0.0)
 
         val evaluation = when {
-            totalDuration < 10 -> "資料不足，無法評估"
-            uprightDuration / totalDuration > 0.6 -> "姿勢良好，請繼續保持"
-            redDuration / totalDuration > 0.4 -> "姿勢需注意，請改善坐姿"
-            else -> "姿勢普通，仍有進步空間"
+            totalDuration < 10 -> 0
+            uprightDuration / totalDuration > 0.6 -> 1
+            redDuration / totalDuration > 0.4 -> 2
+            else -> 3
         }
+
+        val evaluationColorMap = mapOf(
+            0 to "#9E9E9E".toColorInt(), // 灰
+            1 to "#4CAF50".toColorInt(), // 綠
+            2 to "#F44336".toColorInt(), // 紅
+            3 to "#9E9E9E".toColorInt()  // 灰
+        )
 
         holder.greenText.text = greenList.joinToString("\n")
         holder.redText.text = redList.joinToString("\n")
         holder.blackText.text = blackList.joinToString("\n")
-        holder.evaluationText.text = evaluation
+        holder.evaluationText.text = evaluationText[evaluation]
+        holder.evaluationText.setTextColor(evaluationColorMap[evaluation] ?: "#000000".toColorInt())
 
         // 將姿勢統計資料轉為 PieEntry 清單
         val entries = item.postures.mapNotNull { (key, value) ->

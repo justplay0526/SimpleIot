@@ -10,6 +10,7 @@
         android:textSize="18sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         tools:text="TimeStamp Text"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
@@ -19,7 +20,7 @@
         android:textSize="14sp"
         android:textColor="#00A600"
         android:layout_marginTop="4dp"
-        android:layout_marginStart="32dp"
+        android:layout_marginStart="48dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="Green Text"
@@ -31,7 +32,7 @@
         android:textSize="14sp"
         android:textColor="#EA0000"
         android:layout_marginTop="4dp"
-        android:layout_marginStart="32dp"
+        android:layout_marginStart="48dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="Red Text"
@@ -43,7 +44,7 @@
         android:textSize="14sp"
         android:textColor="@color/black"
         android:layout_marginTop="4dp"
-        android:layout_marginStart="32dp"
+        android:layout_marginStart="48dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="Black Text"
@@ -55,13 +56,14 @@
         android:textSize="14sp"
         android:textStyle="italic"
         android:layout_marginTop="6dp"
-        android:layout_marginStart="32dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginEnd="16dp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         tools:text="評價文字"
         app:layout_constraintTop_toBottomOf="@id/BlackText"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toStartOf="@id/pieChart"/>
 
     <com.github.mikephil.charting.charts.PieChart
         android:id="@+id/pieChart"
