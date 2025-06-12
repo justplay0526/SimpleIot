@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity() {
                     summaryList.add(SummaryItem(id, timestamp, totalFrames, postureMap))
                 }
 
-                recyclerView.adapter = SummaryAdapter(summaryList)
+                recyclerView.adapter = SummaryAdapter(summaryList.reversed())
                 swipeRefreshLayout?.isRefreshing = false // 停止刷新動畫
             }
 
