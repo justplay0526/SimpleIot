@@ -1,5 +1,6 @@
 package com.practice.simpleiot
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,14 +21,14 @@ class SummaryAdapter(private val data: List<SummaryItem>) :
     private val labelMap = mapOf(
         "Upright Head" to "坐姿良好",
         "Head Down" to "低頭",
-        "Leaning Sideways" to "身體傾斜",
+        "Leaning Sideways" to "身體側彎",
         "Relaxed Posture" to "姿勢鬆散",
         "Detection Error" to "偵測錯誤")
     private val greenSet = setOf("Upright Head")
     private val redSet = setOf("Head Down", "Leaning Sideways")
     private val blackSet = setOf("Relaxed Posture", "Detection Error")
     private val evaluationText = listOf("資料不足，無法評估", "姿勢良好，請繼續保持"
-        , "姿勢需注意，請改善坐姿", "姿勢普通，仍有進步空間")
+         , "嚴重低頭，請改善坐姿", "嚴重側彎，請改善坐姿", "姿勢需注意，請改善坐姿", "姿勢普通，仍有進步空間")
 
     class SummaryViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val timeText: TextView = view.findViewById(R.id.timestampText)
@@ -66,23 +67,33 @@ class SummaryAdapter(private val data: List<SummaryItem>) :
         }
         blackList.reverse()
 
-        val totalDuration = item.postures.values.sumOf { it.duration_sec }
+        val totalDuration = (item.postures["Head Down"]?.duration_sec ?: 0.0) +
+                (item.postures["Leaning Sideways"]?.duration_sec ?: 0.0) +
+                (item.postures["Upright Head"]?.duration_sec ?: 0.0) +
+                (item.postures["Relaxed Posture"]?.duration_sec ?: 0.0)
+
         val uprightDuration = item.postures["Upright Head"]?.duration_sec ?: 0.0
+        val headDownDuration = (item.postures["Head Down"]?.duration_sec ?: 0.0)
+        val leaningDuration =(item.postures["Leaning Sideways"]?.duration_sec ?: 0.0)
         val redDuration = (item.postures["Head Down"]?.duration_sec ?: 0.0) +
                 (item.postures["Leaning Sideways"]?.duration_sec ?: 0.0)
 
         val evaluation = when {
-            totalDuration < 10 -> 0
-            uprightDuration / totalDuration > 0.6 -> 1
-            redDuration / totalDuration > 0.4 -> 2
-            else -> 3
+            totalDuration < 30 -> 0
+            uprightDuration / totalDuration > 0.5 -> 1
+            headDownDuration / totalDuration > 0.3 -> 2
+            leaningDuration / totalDuration > 0.3 -> 3
+            redDuration / totalDuration > 0.6 -> 4
+            else -> 5
         }
 
         val evaluationColorMap = mapOf(
             0 to "#9E9E9E".toColorInt(), // 灰
             1 to "#4CAF50".toColorInt(), // 綠
             2 to "#F44336".toColorInt(), // 紅
-            3 to "#9E9E9E".toColorInt()  // 灰
+            3 to "#F44336".toColorInt(), // 紅
+            4 to "#F44336".toColorInt(), // 紅
+            5 to "#9E9E9E".toColorInt() // 灰
         )
 
         holder.greenText.text = greenList.joinToString("\n")
